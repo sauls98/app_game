@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#170812" />
+  <meta name="description" content="Juego offline para parejas adultas con retos sensuales, consentimiento y privacidad." />
+  <title>Ritual de Pareja · Juego Offline para Adultos</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-night">
+  <noscript>
+    <div class="noscript">
+      Esta aplicación necesita JavaScript habilitado para funcionar.
+    </div>
+  </noscript>
+
+  <section id="ageGate" class="age-gate" role="dialog" aria-modal="true" aria-labelledby="ageTitle">
+    <div class="age-card glass-card">
+      <img src="assets/images/logo.svg" alt="Logo Ritual de Pareja" class="age-logo" />
+      <p class="eyebrow">18+ · Privado · Consentido</p>
+      <h1 id="ageTitle">Experiencia exclusiva para personas adultas</h1>
+      <p>
+        Esta aplicación contiene dinámicas románticas, sensuales y eróticas para parejas adultas.
+        Usa siempre consentimiento claro, límites acordados y una palabra de pausa.
+      </p>
+      <div class="consent-list" aria-label="Confirmaciones de entrada">
+        <label>
+          <input type="checkbox" id="ageCheck" />
+          Confirmo que ambas personas tienen 18 años o más.
+        </label>
+        <label>
+          <input type="checkbox" id="consentCheck" />
+          Confirmo que todo se hará con consentimiento libre, reversible y respetuoso.
+        </label>
+        <label>
+          <input type="checkbox" id="privacyCheck" />
+          Entiendo que puedo saltar cualquier reto y borrar los datos locales.
+        </label>
+      </div>
+      <div class="age-actions">
+        <button id="enterApp" class="btn primary" disabled>Entrar</button>
+        <button id="leaveApp" class="btn ghost">No entrar</button>
+      </div>
+      <small>
+        La app no envía datos a internet. La configuración y el historial se guardan solo en este navegador.
+      </small>
+    </div>
+  </section>
+
+  <section id="privacyCover" class="privacy-cover hidden" role="dialog" aria-modal="true" aria-labelledby="privacyTitle" tabindex="-1">
+    <img src="assets/images/privacy-cover.svg" alt="Pantalla privada" class="privacy-art" />
+    <h2 id="privacyTitle">Modo privado activado</h2>
+    <p>El contenido del juego está oculto.</p>
+    <button id="unlockPrivacy" class="btn primary">Volver al juego</button>
+  </section>
+
+  <div id="app" class="app-shell" aria-live="polite">
+    <header class="app-header glass-card">
+      <a class="brand" href="#homeView" data-view="homeView" aria-label="Ir al inicio">
+        <img src="assets/images/logo.svg" alt="" class="brand-logo" />
+        <span>
+          <strong>Ritual de Pareja</strong>
+          <small data-i18n="subtitle">Juego offline para adultos</small>
+        </span>
+      </a>
+
+      <nav class="top-nav" aria-label="Navegación principal">
+        <button class="nav-link active" data-view="homeView" data-i18n="navHome">Inicio</button>
+        <button class="nav-link" data-view="rouletteView" data-i18n="navRoulette">Ruleta</button>
+        <button class="nav-link" data-view="cardsView" data-i18n="navCards">Cartas</button>
+        <button class="nav-link" data-view="diceView" data-i18n="navDice">Dados</button>
+        <button class="nav-link" data-view="levelsView" data-i18n="navLevels">Niveles</button>
+      </nav>
+
+      <div class="header-actions">
+        <button id="privacyBtn" class="icon-btn" title="Ocultar pantalla" aria-label="Ocultar pantalla">◐</button>
+        <button id="settingsBtn" class="icon-btn" title="Configuración" aria-label="Configuración">⚙</button>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <aside class="side-panel glass-card">
+        <div class="score-card">
+          <span data-i18n="scoreTitle">Puntos</span>
+          <strong id="scoreValue">0</strong>
+        </div>
+        <div class="mini-stats">
+          <span><b id="completedValue">0</b> <em data-i18n="completedLabel">completados</em></span>
+          <span><b id="skippedValue">0</b> <em data-i18n="skippedLabel">saltados</em></span>
+        </div>
+        <div class="safe-word-box">
+          <span data-i18n="safeWordLabel">Palabra de pausa sugerida</span>
+          <strong id="safeWordDisplay">PAUSA</strong>
+          <button id="randomSafeWord" class="btn tiny" data-i18n="changeSafeWord">Cambiar</button>
+        </div>
+        <div class="limits-preview">
+          <span data-i18n="activeLimits">Intensidades activas</span>
+          <div id="activeIntensityList" class="pill-row"></div>
+        </div>
+        <div class="side-actions">
+          <button class="btn secondary full" data-view="randomView" data-i18n="randomMode">Modo aleatorio</button>
+          <button class="btn ghost full" data-view="historyView" data-i18n="history">Historial</button>
+          <button id="resetGameBtn" class="btn danger full" data-i18n="resetGame">Reiniciar partida</button>
+        </div>
+      </aside>
+
+      <section id="homeView" class="view active">
+        <div class="hero glass-card">
+          <div>
+            <p class="eyebrow">Offline · LocalStorage · PWA</p>
+            <h1 data-i18n="homeTitle">Juegos sensuales para una noche privada</h1>
+            <p data-i18n="homeText">
+              Elige una dinámica, define límites y disfruta retos diseñados para conversación, conexión y deseo consentido.
+            </p>
+            <div class="hero-actions">
+              <button class="btn primary" data-view="rouletteView" data-i18n="startRoulette">Girar ruleta</button>
+              <button class="btn secondary" data-view="cardsView" data-i18n="drawCard">Tomar carta</button>
+              <button class="btn ghost" data-view="settingsView" data-i18n="configureLimits">Configurar límites</button>
+            </div>
+          </div>
+          <div class="hero-orb" aria-hidden="true">
+            <span></span>
+          </div>
+        </div>
+
+        <div class="mode-grid">
+          <article class="mode-card glass-card" data-view="rouletteView" tabindex="0">
+            <span class="mode-icon">◎</span>
+            <h2 data-i18n="modeRouletteTitle">Ruleta de retos</h2>
+            <p data-i18n="modeRouletteText">Gira, recibe un reto filtrado por intensidad y decide completar, saltar o repetir.</p>
+          </article>
+          <article class="mode-card glass-card" data-view="cardsView" tabindex="0">
+            <span class="mode-icon">◇</span>
+            <h2 data-i18n="modeCardsTitle">Cartas de preguntas</h2>
+            <p data-i18n="modeCardsText">Preguntas íntimas para explorar gustos, límites, fantasías y cariño.</p>
+          </article>
+          <article class="mode-card glass-card" data-view="diceView" tabindex="0">
+            <span class="mode-icon">⚂</span>
+            <h2 data-i18n="modeDiceTitle">Dados eróticos</h2>
+            <p data-i18n="modeDiceText">Combina acción y estilo para crear una dinámica breve y consensuada.</p>
+          </article>
+          <article class="mode-card glass-card" data-view="levelsView" tabindex="0">
+            <span class="mode-icon">✦</span>
+            <h2 data-i18n="modeLevelsTitle">Retos por niveles</h2>
+            <p data-i18n="modeLevelsText">Avanza desde conexión romántica hasta dinámicas más intensas.</p>
+          </article>
+        </div>
+
+        <div class="notice glass-card">
+          <h2 data-i18n="consentTitle">Consentimiento primero</h2>
+          <p data-i18n="consentText">
+            Cualquier reto puede detenerse, modificarse o saltarse. Hablen antes, durante y después. Ningún punto vale más que la comodidad de ambos.
+          </p>
+        </div>
+      </section>
+
+      <section id="rouletteView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="rouletteEyebrow">Dinámica</p>
+          <h1 data-i18n="rouletteTitle">Ruleta de retos</h1>
+          <p data-i18n="rouletteText">La ruleta respeta las intensidades y categorías excluidas en configuración.</p>
+        </div>
+        <div class="play-layout">
+          <div class="wheel-card glass-card">
+            <div class="wheel-pointer" aria-hidden="true"></div>
+            <div id="wheel" class="wheel" aria-hidden="true">
+              <span>Suave</span><span>Medio</span><span>Intenso</span><span>Libre</span>
+            </div>
+            <button id="spinBtn" class="btn primary large" data-i18n="spin">Girar</button>
+          </div>
+          <article id="rouletteResult" class="challenge-card glass-card empty">
+            <h2 data-i18n="emptyRouletteTitle">Gira la ruleta</h2>
+            <p data-i18n="emptyRouletteText">Aparecerá un reto con opciones para completar, saltar o repetir.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="cardsView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="cardsEyebrow">Conversación</p>
+          <h1 data-i18n="cardsTitle">Cartas de preguntas</h1>
+          <p data-i18n="cardsText">Tomen turnos para responder, sin presión y con total libertad para pasar.</p>
+        </div>
+        <div class="play-layout">
+          <div class="deck-card glass-card">
+            <div id="questionCard" class="flip-card" aria-live="polite">
+              <div class="flip-inner">
+                <div class="flip-face flip-front">
+                  <span>◇</span>
+                  <strong data-i18n="deckFront">Carta privada</strong>
+                </div>
+                <div class="flip-face flip-back">
+                  <span data-i18n="deckBack">Lista para descubrir</span>
+                </div>
+              </div>
+            </div>
+            <button id="drawCardBtn" class="btn primary large" data-i18n="drawCardAction">Tomar carta</button>
+          </div>
+          <article id="cardResult" class="challenge-card glass-card empty">
+            <h2 data-i18n="emptyCardsTitle">Toma una carta</h2>
+            <p data-i18n="emptyCardsText">La pregunta aparecerá aquí con sus controles.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="diceView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="diceEyebrow">Azar</p>
+          <h1 data-i18n="diceTitle">Dados eróticos</h1>
+          <p data-i18n="diceText">Un dado elige la acción y otro define el estilo, duración o regla.</p>
+        </div>
+        <div class="play-layout">
+          <div class="dice-card glass-card">
+            <div class="dice-row">
+              <div id="actionDie" class="die" aria-label="Dado de acción">?</div>
+              <div id="styleDie" class="die" aria-label="Dado de estilo">?</div>
+            </div>
+            <button id="rollDiceBtn" class="btn primary large" data-i18n="rollDice">Lanzar dados</button>
+          </div>
+          <article id="diceResult" class="challenge-card glass-card empty">
+            <h2 data-i18n="emptyDiceTitle">Lanza los dados</h2>
+            <p data-i18n="emptyDiceText">La combinación se convertirá en una dinámica consensuada.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="levelsView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="levelsEyebrow">Progresión</p>
+          <h1 data-i18n="levelsTitle">Retos por niveles</h1>
+          <p data-i18n="levelsText">Completa retos para avanzar. Puedes saltar cualquier reto sin penalización.</p>
+        </div>
+        <div class="play-layout">
+          <div class="levels-card glass-card">
+            <ol id="levelTrack" class="level-track"></ol>
+            <button id="levelChallengeBtn" class="btn primary large" data-i18n="nextLevelChallenge">Siguiente reto</button>
+          </div>
+          <article id="levelResult" class="challenge-card glass-card empty">
+            <h2 data-i18n="emptyLevelsTitle">Empieza el nivel</h2>
+            <p data-i18n="emptyLevelsText">El primer reto se adaptará al nivel activo y a tus límites.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="randomView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="randomEyebrow">Libre</p>
+          <h1 data-i18n="randomTitle">Modo aleatorio y categorías</h1>
+          <p data-i18n="randomText">Elige una categoría o deja que el sistema seleccione cualquier reto permitido.</p>
+        </div>
+        <div class="category-panel glass-card">
+          <div id="categoryChips" class="chip-grid" role="group" aria-label="Categorías"></div>
+          <button id="randomChallengeBtn" class="btn primary large" data-i18n="randomChallenge">Reto aleatorio</button>
+        </div>
+        <article id="randomResult" class="challenge-card glass-card empty">
+          <h2 data-i18n="emptyRandomTitle">Elige o sortea</h2>
+          <p data-i18n="emptyRandomText">Aquí se mostrará el reto filtrado por límites.</p>
+        </article>
+      </section>
+
+      <section id="historyView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="historyEyebrow">Local</p>
+          <h1 data-i18n="historyTitle">Historial</h1>
+          <p data-i18n="historyText">Registro guardado solo en este navegador. Puedes borrarlo en cualquier momento.</p>
+        </div>
+        <div class="history-panel glass-card">
+          <div class="history-actions">
+            <button id="clearHistoryBtn" class="btn danger" data-i18n="clearHistory">Borrar historial</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </section>
+
+      <section id="settingsView" class="view">
+        <div class="section-heading">
+          <p class="eyebrow" data-i18n="settingsEyebrow">Control</p>
+          <h1 data-i18n="settingsTitle">Configuración y límites</h1>
+          <p data-i18n="settingsText">Ajusta idioma, tema, intensidad y categorías excluidas antes de jugar.</p>
+        </div>
+        <form id="settingsForm" class="settings-grid glass-card">
+          <fieldset>
+            <legend data-i18n="playersLegend">Nombres</legend>
+            <label for="playerA" data-i18n="playerA">Persona A</label>
+            <input id="playerA" name="playerA" type="text" maxlength="24" autocomplete="off" />
+            <label for="playerB" data-i18n="playerB">Persona B</label>
+            <input id="playerB" name="playerB" type="text" maxlength="24" autocomplete="off" />
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="experienceLegend">Experiencia</legend>
+            <label for="languageSelect" data-i18n="languageLabel">Idioma</label>
+            <select id="languageSelect" name="language">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
+
+            <label for="themeSelect" data-i18n="themeLabel">Tema</label>
+            <select id="themeSelect" name="theme">
+              <option value="night">Nocturno sensual</option>
+              <option value="rose">Rosa elegante</option>
+            </select>
+
+            <label class="toggle-line">
+              <input id="soundToggle" name="sound" type="checkbox" />
+              <span data-i18n="soundLabel">Sonidos locales</span>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="intensityLegend">Intensidad permitida</legend>
+            <label class="toggle-line"><input type="checkbox" name="intensity" value="soft" /> <span data-i18n="soft">Suave</span></label>
+            <label class="toggle-line"><input type="checkbox" name="intensity" value="medium" /> <span data-i18n="medium">Medio</span></label>
+            <label class="toggle-line"><input type="checkbox" name="intensity" value="intense" /> <span data-i18n="intense">Intenso</span></label>
+            <small data-i18n="intensityHelp">Debe quedar al menos una intensidad activa.</small>
+          </fieldset>
+
+          <fieldset>
+            <legend data-i18n="limitsLegend">Excluir categorías</legend>
+            <div id="limitCheckboxes" class="limit-checkboxes"></div>
+          </fieldset>
+
+          <fieldset class="wide-fieldset">
+            <legend data-i18n="localDataLegend">Datos locales</legend>
+            <p data-i18n="localDataText">La app usa localStorage para guardar configuración, puntos e historial en este navegador.</p>
+            <div class="form-actions">
+              <button type="submit" class="btn primary" data-i18n="saveSettings">Guardar configuración</button>
+              <button type="button" id="clearLocalDataBtn" class="btn danger" data-i18n="clearLocalData">Borrar datos locales</button>
+            </div>
+          </fieldset>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <audio id="fxSpin" src="assets/audio/spin.wav" preload="auto"></audio>
+  <audio id="fxSuccess" src="assets/audio/success.wav" preload="auto"></audio>
+  <audio id="fxTimer" src="assets/audio/timer.wav" preload="auto"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>

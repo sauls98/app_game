@@ -1,0 +1,19 @@
+{
+  "name": "Ritual de Pareja Offline",
+  "short_name": "Ritual Pareja",
+  "description": "Aplicación offline para parejas adultas con juegos sensuales, consentimiento y privacidad.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#150811",
+  "theme_color": "#ff4f92",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
